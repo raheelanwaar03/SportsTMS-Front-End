@@ -1,0 +1,669 @@
+{
+  "info": {
+    "_postman_id": "fbee2b2e-1578-46dc-88b2-1f9bce9001c8",
+    "name": "Sports Tournament Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18492031"
+  },
+  "item": [
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"JohnSmith\",\n  \"email\": \"johnsmith@gmail.com\",\n  \"password\": \"password123\",\n  \"role\": \"SPECTATOR\"\n//   \"role\": \"ORGANIZER\"\n//   \"role\": \"TEAM_MANAGER\"\n//   \"role\": \"PLAYER\"\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth_url}}/api/users/register",
+              "host": [
+                "{{auth_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n//    \"email\": \"johnsmith@gmail.com\",\n//   \"password\": \"password123\"\n }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth_url}}/api/users/login",
+              "host": [
+                "{{auth_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tournament Service",
+      "item": [
+        {
+          "name": "Create Tournament",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Championship 2024\",\n  \"description\": \"Annual summer sports championship\",\n  \"startDate\": \"2024-06-01T09:00:00Z\",\n  \"endDate\": \"2024-06-15T18:00:00Z\",\n  \"sportType\": \"cricket\",\n//   \"organizerId\": \"{{organizer_id}}\"\n  \"organizerId\": \"13\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{tournament_url}}/api/tournaments",
+              "host": [
+                "{{tournament_url}}"
+              ],
+              "path": [
+                "api",
+                "tournaments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tournaments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{tournament_url}}/api/tournaments",
+              "host": [
+                "{{tournament_url}}"
+              ],
+              "path": [
+                "api",
+                "tournaments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tournament By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{tournament_url}}/api/tournaments/{{tournament_id}}",
+              "host": [
+                "{{tournament_url}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{tournament_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Tournament",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Summer Championship 2024\",\n  \"description\": \"Updated annual summer sports championship\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{tournament_url}}/api/tournaments/{{tournament_id}}",
+              "host": [
+                "{{tournament_url}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{tournament_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tournament",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{tournament_url}}/api/tournaments/{{tournament_id}}",
+              "host": [
+                "{{tournament_url}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{tournament_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Team Service",
+      "item": [
+        {
+          "name": "Register Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamName\": \"Thunderbolts FC\",\n  \"captainId\": \"{{player_id}}\",\n  \"tournamentId\": \"{{tournament_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{team_url}}/api/teams",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{team_url}}/api/teams",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Team By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{team_url}}/api/teams/{{team_id}}",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{team_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamName\": \"Updated Thunderbolts FC\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{team_url}}/api/teams/{{team_id}}",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{team_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{team_url}}/api/teams/{{team_id}}",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{team_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Player to Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"playerId\": \"{{new_player_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{team_url}}/api/teams/{{team_id}}/players",
+              "host": [
+                "{{team_url}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{team_id}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Match Service",
+      "item": [
+        {
+          "name": "Schedule Match",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamAId\": \"{{team_a_id}}\",\n  \"teamBId\": \"{{team_b_id}}\",\n  \"date\": \"2024-06-05T15:00:00Z\",\n  \"venue\": \"Main Stadium\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{match_url}}/api/matches",
+              "host": [
+                "{{match_url}}"
+              ],
+              "path": [
+                "api",
+                "matches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Matches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{match_url}}/api/matches",
+              "host": [
+                "{{match_url}}"
+              ],
+              "path": [
+                "api",
+                "matches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Match By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{match_url}}/api/matches/{{match_id}}",
+              "host": [
+                "{{match_url}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{match_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Match Result",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"result\": {\n    \"teamAScore\": 2,\n    \"teamBScore\": 1,\n    \"winnerId\": \"{{team_a_id}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{match_url}}/api/matches/{{match_id}}/result",
+              "host": [
+                "{{match_url}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{match_id}}",
+                "result"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Standings Service",
+      "item": [
+        {
+          "name": "Get Tournament Standings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{standings_url}}/api/standings/{{tournament_id}}",
+              "host": [
+                "{{standings_url}}"
+              ],
+              "path": [
+                "api",
+                "standings",
+                "{{tournament_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Announcement Service",
+      "item": [
+        {
+          "name": "Create Announcement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tournament Kickoff Reminder\",\n  \"content\": \"Don't forget the opening ceremony starts at 9 AM tomorrow!\",\n//   \"authorId\": \"{{organizer_id}}\"\n  \"authorId\": \"69ee07ee9da0a61d87d2c4e1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{announcement_url}}/api/announcements",
+              "host": [
+                "{{announcement_url}}"
+              ],
+              "path": [
+                "api",
+                "announcements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Announcements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{announcement_url}}/api/announcements",
+              "host": [
+                "{{announcement_url}}"
+              ],
+              "path": [
+                "api",
+                "announcements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Announcement By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{announcement_url}}/api/announcements/{{announcement_id}}",
+              "host": [
+                "{{announcement_url}}"
+              ],
+              "path": [
+                "api",
+                "announcements",
+                "{{announcement_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_url",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "tournament_url",
+      "value": "http://localhost:6000"
+    },
+    {
+      "key": "team_url",
+      "value": "http://localhost:7000"
+    },
+    {
+      "key": "match_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "standings_url",
+      "value": "http://localhost:9000"
+    },
+    {
+      "key": "announcement_url",
+      "value": "http://localhost:10000"
+    },
+    {
+      "key": "auth_token",
+      "value": ""
+    },
+    {
+      "key": "organizer_id",
+      "value": ""
+    },
+    {
+      "key": "tournament_id",
+      "value": ""
+    },
+    {
+      "key": "team_id",
+      "value": ""
+    },
+    {
+      "key": "match_id",
+      "value": ""
+    },
+    {
+      "key": "announcement_id",
+      "value": ""
+    },
+    {
+      "key": "player_id",
+      "value": ""
+    },
+    {
+      "key": "team_a_id",
+      "value": ""
+    },
+    {
+      "key": "team_b_id",
+      "value": ""
+    },
+    {
+      "key": "new_player_id",
+      "value": ""
+    }
+  ]
+}
