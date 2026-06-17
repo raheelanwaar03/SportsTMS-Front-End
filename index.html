@@ -3,35 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Tournament Management System</title>
+    <title>Dashboard - Sports TMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1 class="mt-5 text-center">Login</h1>
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-                <div id="loginMessage" class="mt-3"></div>
-                <div class="mt-3 text-center">
-                    <a href="register.html">Don't have an account? Register here.</a>
+<body class="app-page">
+    <div class="app-shell">
+        <header class="app-header" aria-label="Main navigation">
+            <div class="app-header-inner">
+                <a class="brand-lockup" href="index.html">
+                    <span class="brand-icon"><i class="bi bi-trophy-fill"></i></span>
+                    <span>Sports TMS</span>
+                </a>
+
+                <nav class="top-nav">
+                    <button class="nav-link active" type="button" data-section="tournaments">
+                        <i class="bi bi-trophy"></i>
+                        <span>Tournaments</span>
+                    </button>
+                    <button class="nav-link" type="button" data-section="teams">
+                        <i class="bi bi-people"></i>
+                        <span>Teams</span>
+                    </button>
+                    <button class="nav-link" type="button" data-section="matches">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Matches</span>
+                    </button>
+                    <button class="nav-link" type="button" data-section="standings">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Standings</span>
+                    </button>
+                    <button class="nav-link" type="button" data-section="announcements">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Announcements</span>
+                    </button>
+                </nav>
+
+                <div class="account-actions">
+                    <div id="userName" class="user-chip">Signed in</div>
+                    <button id="logoutButton" class="btn btn-outline-light">
+                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    </button>
                 </div>
             </div>
+        </header>
+
+        <main class="app-main">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Control room</p>
+                    <h1 id="pageTitle">Tournaments</h1>
+                    <p id="pageSubtitle">Create and monitor competitions across sports.</p>
+                </div>
+            </header>
+
+            <div id="alertPlaceholder" class="alerts"></div>
+
+            <section class="stat-grid" aria-label="Dashboard summary">
+                <div class="stat-tile">
+                    <span>Tournaments</span>
+                    <strong id="tournamentCount">0</strong>
+                </div>
+                <div class="stat-tile">
+                    <span>Teams</span>
+                    <strong id="teamCount">0</strong>
+                </div>
+                <div class="stat-tile">
+                    <span>Matches</span>
+                    <strong id="matchCount">0</strong>
+                </div>
+                <div class="stat-tile">
+                    <span>Announcements</span>
+                    <strong id="announcementCount">0</strong>
+                </div>
+            </section>
+
+            <section id="tournamentsSection" class="dashboard-section" data-title="Tournaments" data-subtitle="Create and monitor competitions across sports.">
+                <div class="section-toolbar">
+                    <div>
+                        <h2>Tournaments</h2>
+                        <p>Track dates, sports, and organizer actions.</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tournamentModal">
+                        <i class="bi bi-plus-lg me-2"></i>Add Tournament
+                    </button>
+                </div>
+                <div id="tournamentList" class="content-grid"></div>
+            </section>
+
+            <section id="teamsSection" class="dashboard-section d-none" data-title="Teams" data-subtitle="Manage team registrations and tournament assignments.">
+                <div class="section-toolbar">
+                    <div>
+                        <h2>Teams</h2>
+                        <p>Keep team names, captains, and tournament links tidy.</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal">
+                        <i class="bi bi-person-plus me-2"></i>Register Team
+                    </button>
+                </div>
+                <div id="teamList" class="content-grid"></div>
+            </section>
+
+            <section id="matchesSection" class="dashboard-section d-none" data-title="Matches" data-subtitle="Schedule fixtures and review match status.">
+                <div class="section-toolbar">
+                    <div>
+                        <h2>Matches</h2>
+                        <p>Coordinate fixture timing, venues, and results.</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#matchModal">
+                        <i class="bi bi-calendar-plus me-2"></i>Schedule Match
+                    </button>
+                </div>
+                <div class="data-panel table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tournament</th>
+                                <th>Team A</th>
+                                <th>Team B</th>
+                                <th>Venue</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matchTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="standingsSection" class="dashboard-section d-none" data-title="Standings" data-subtitle="Compare team performance inside a selected tournament.">
+                <div class="section-toolbar">
+                    <div>
+                        <h2>Standings</h2>
+                        <p>Rank teams by points and match outcomes.</p>
+                    </div>
+                    <div class="min-width-select">
+                        <label for="standingTournamentSelect" class="visually-hidden">Select Tournament</label>
+                        <select id="standingTournamentSelect" class="form-select"></select>
+                    </div>
+                </div>
+                <div class="data-panel table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Team</th>
+                                <th>Played</th>
+                                <th>Won</th>
+                                <th>Lost</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standingsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="announcementsSection" class="dashboard-section d-none" data-title="Announcements" data-subtitle="Publish operational updates for everyone following the tournament.">
+                <div class="section-toolbar">
+                    <div>
+                        <h2>Announcements</h2>
+                        <p>Share reminders, schedule notes, and tournament news.</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#announcementModal">
+                        <i class="bi bi-send me-2"></i>New Announcement
+                    </button>
+                </div>
+                <div id="announcementList" class="list-stream"></div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal fade" id="tournamentModal" tabindex="-1" aria-labelledby="tournamentModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="tournamentForm" class="modal-content">
+                <div class="modal-header">
+                    <h2 id="tournamentModalTitle" class="modal-title fs-5">Tournament Details</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="tournamentId">
+                    <div class="mb-3">
+                        <label for="tournamentName" class="form-label">Tournament Name</label>
+                        <input type="text" id="tournamentName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tournamentSportType" class="form-label">Sport Type</label>
+                        <input type="text" id="tournamentSportType" class="form-control" placeholder="Cricket, football, volleyball" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tournamentStartDate" class="form-label">Start Date</label>
+                            <input type="datetime-local" id="tournamentStartDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="tournamentEndDate" class="form-label">End Date</label>
+                            <input type="datetime-local" id="tournamentEndDate" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tournamentDescription" class="form-label">Description</label>
+                        <textarea id="tournamentDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Save Tournament
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="teamModal" tabindex="-1" aria-labelledby="teamModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="teamForm" class="modal-content">
+                <div class="modal-header">
+                    <h2 id="teamModalTitle" class="modal-title fs-5">Team Details</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="teamId">
+                    <div class="mb-3">
+                        <label for="teamName" class="form-label">Team Name</label>
+                        <input type="text" id="teamName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teamTournament" class="form-label">Tournament</label>
+                        <select id="teamTournament" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teamCaptain" class="form-label">Captain ID</label>
+                        <input type="text" id="teamCaptain" class="form-control" placeholder="Player ID" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-person-plus me-2"></i>Register Team
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="matchModal" tabindex="-1" aria-labelledby="matchModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="matchForm" class="modal-content">
+                <div class="modal-header">
+                    <h2 id="matchModalTitle" class="modal-title fs-5">Schedule Match</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="matchTournament" class="form-label">Tournament</label>
+                        <select id="matchTournament" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matchTeamA" class="form-label">Team A</label>
+                        <select id="matchTeamA" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matchTeamB" class="form-label">Team B</label>
+                        <select id="matchTeamB" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matchVenue" class="form-label">Venue</label>
+                        <input type="text" id="matchVenue" class="form-control" placeholder="Main Stadium" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matchDate" class="form-label">Date and Time</label>
+                        <input type="datetime-local" id="matchDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calendar-plus me-2"></i>Schedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="announcementForm" class="modal-content">
+                <div class="modal-header">
+                    <h2 id="announcementModalTitle" class="modal-title fs-5">New Announcement</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="announcementTitle" class="form-label">Title</label>
+                        <input type="text" id="announcementTitle" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="announcementContent" class="form-label">Content</label>
+                        <textarea id="announcementContent" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send me-2"></i>Post Announcement
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script type="module" src="js/script.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
