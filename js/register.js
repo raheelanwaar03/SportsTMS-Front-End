@@ -1,48 +1,87 @@
-import { AUTHENTICATION_API } from './ApiServices.js';
+import {
+    AUTHENTICATION_API,
+    getApiErrorMessage,
+    requestJson,
+    saveAuthSession
+} from './ApiServices.js';
 
-document.getElementById('registerForm').addEventListener('submit', function(event) {
+const form = document.getElementById('registerForm');
+const registerMessage = document.getElementById('registerMessage');
+const submitButton = form?.querySelector('button[type="submit"]');
+
+form?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
-    const registerMessage = document.getElementById('registerMessage');
 
-    // Basic validation
     if (!username || !email || !password || !role) {
-        registerMessage.textContent = 'Please fill in all fields.';
-        registerMessage.className = 'alert alert-danger';
+        showMessage('Please fill in all fields.', 'danger');
         return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        registerMessage.textContent = 'Please enter a valid email address.';
-        registerMessage.className = 'alert alert-danger';
+    if (!isValidEmail(email)) {
+        showMessage('Please enter a valid email address.', 'danger');
         return;
     }
 
-    fetch(`${AUTHENTICATION_API.BASE_URL}${AUTHENTICATION_API.REGISTER}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, email, password, role })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.id) {
-            registerMessage.textContent = 'Registration successful! Please login.';
-            registerMessage.className = 'alert alert-success';
-        } else {
-            registerMessage.textContent = data.message || 'Registration failed!';
-            registerMessage.className = 'alert alert-danger';
+    if (password.length < 6) {
+        showMessage('Password must be at least 6 characters.', 'danger');
+        return;
+    }
+
+    setLoading(true);
+
+    try {
+        const data = await requestJson(`${AUTHENTICATION_API.BASE_URL}${AUTHENTICATION_API.REGISTER}`, {
+            method: 'POST',
+            token: null,
+            body: { username, email, password, role }
+        });
+
+        const registeredUser = data?.user || data?.data?.user || data;
+        const succeeded = data?.success === true || Boolean(data?.token || registeredUser?.id || registeredUser?._id);
+
+        if (!succeeded) {
+            showMessage(data?.msg || data?.message || 'Registration failed.', 'danger');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        registerMessage.textContent = 'An error occurred during registration.';
-        registerMessage.className = 'alert alert-danger';
-    });
+
+        if (data?.token) {
+            saveAuthSession(data);
+            showMessage('Account created. Opening your dashboard...', 'success');
+            window.setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 700);
+            return;
+        }
+
+        showMessage('Account created. Please sign in.', 'success');
+        window.setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1000);
+    } catch (error) {
+        showMessage(getApiErrorMessage(error, 'An error occurred during registration.'), 'danger');
+    } finally {
+        setLoading(false);
+    }
 });
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setLoading(isLoading) {
+    if (!submitButton) return;
+    submitButton.disabled = isLoading;
+    submitButton.innerHTML = isLoading
+        ? '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Creating'
+        : '<i class="bi bi-person-plus me-2"></i>Create account';
+}
+
+function showMessage(message, type) {
+    registerMessage.textContent = message;
+    registerMessage.className = `auth-message alert alert-${type}`;
+}
